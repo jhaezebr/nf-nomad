@@ -16,7 +16,7 @@ inputs:
 
 defaults:
   run:
-    working-directory: ./terraform
+    working-directory: ${{ env.tf_actions_working_dir }}/terraform
 
 runs:
   using: "composite"
