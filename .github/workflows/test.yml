@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Print
         run: echo 'OK'
+      - name: Checkout the code
+        uses: actions/checkout@v3
       - name: Create nomad
         uses: ./.github/actions/create_nomad_cluster
         with:
