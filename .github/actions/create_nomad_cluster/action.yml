@@ -19,6 +19,11 @@ runs:
   steps:
     - name: Checkout the code
       uses: actions/checkout@v3
+    
+    - name: Setup Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20'
 
     - name: Setup terraform
       uses: hashicorp/setup-terraform@v2
