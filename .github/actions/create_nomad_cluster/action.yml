@@ -14,10 +14,6 @@ inputs:
     description: 'The client secret associated with the Azure Active Directory (AAD) client ID.'
     required: true
 
-defaults:
-  run:
-    working-directory: ${{ env.tf_actions_working_dir }}/terraform
-
 runs:
   using: "composite"
   steps:
@@ -36,14 +32,17 @@ runs:
 
     - name: Initialize terraforms
       shell: bash
+      working-directory: terraform
       run: terraform init -reconfigure
 
     - name: Terraform plan
       shell: bash
+      working-directory: terraform
       run: terraform plan -lock=false
 
     - name: Apply the changes made
       shell: bash
+      working-directory: terraform
       env:
         TF_VAR_client_id: ${{ inputs.CLIENT_ID }}
         TF_VAR_subscription_id: ${{ inputs.SUBSCRIPTION_ID }}
