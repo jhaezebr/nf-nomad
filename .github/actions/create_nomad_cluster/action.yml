@@ -14,6 +14,12 @@ inputs:
     description: 'The client secret associated with the Azure Active Directory (AAD) client ID.'
     required: true
 
+env:
+  ARM_CLIENT_ID: ${{ inputs.CLIENT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ inputs.SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ inputs.TENANT_ID }}
+  ARM_CLIENT_SECRET: ${{ inputs.CLIENT_SECRET }}
+
 runs:
   using: "composite"
   steps:
