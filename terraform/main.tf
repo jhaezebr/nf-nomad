@@ -5,6 +5,9 @@ terraform {
     storage_account_name = "nfnomad"
     container_name       = "jhaezebr_test"
     key                  = "terraform.tfstate"
+    subscription_id = var.subscription_id
+    client_id       = var.client_id
+    tenant_id       = var.tenant_id
   }
 
   required_providers {
