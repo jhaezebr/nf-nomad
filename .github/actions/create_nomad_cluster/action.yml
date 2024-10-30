@@ -26,12 +26,15 @@ runs:
         terraform_version: 1.9.8
 
     - name: Initialize terraforms
+      shell: bash
       run: terraform init -reconfigure
 
     - name: Terraform plan
+      shell: bash
       run: terraform plan -lock=false
 
     - name: Apply the changes made
+      shell: bash
       env:
         TF_VAR_client_id: ${{ inputs.CLIENT_ID }}
         TF_VAR_subscription_id: ${{ inputs.SUBSCRIPTION_ID }}
