@@ -33,5 +33,5 @@ data "azurerm_resource_group" "nf-nomad" {
 
 data "azurerm_storage_account" "hashistack_job" {
   name = var.storage_account_name
-  resource_group_name = azurerm_resource_group.nf-nomad.name
+  resource_group_name = data.azurerm_resource_group.nf-nomad.name
 }
