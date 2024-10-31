@@ -28,5 +28,10 @@ provider "azurerm" {
 }
 
 data "azurerm_resource_group" "nf-nomad" {
-  name     = "nf-nomad-dev-rg"
+  name = var.resource_group_name
+}
+
+data "azurerm_storage_account" "hashistack_job" {
+  name = var.storage_account_name
+  resource_group_name = azurerm_resource_group.nf-nomad.name
 }
