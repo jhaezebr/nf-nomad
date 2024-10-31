@@ -14,12 +14,6 @@ inputs:
     description: 'The client secret associated with the Azure Active Directory (AAD) client ID.'
     required: true
 
-env:
-  ARM_CLIENT_ID: ${{ inputs.CLIENT_ID }}
-  ARM_SUBSCRIPTION_ID: ${{ inputs.SUBSCRIPTION_ID }}
-  ARM_TENANT_ID: ${{ inputs.TENANT_ID }}
-  ARM_CLIENT_SECRET: ${{ inputs.CLIENT_SECRET }}
-
 runs:
   using: "composite"
   steps:
@@ -40,11 +34,21 @@ runs:
       shell: bash
       working-directory: terraform
       run: terraform init -reconfigure
+      env:
+        ARM_CLIENT_ID: ${{ inputs.CLIENT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ inputs.SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ inputs.TENANT_ID }}
+        ARM_CLIENT_SECRET: ${{ inputs.CLIENT_SECRET }}
 
     - name: Terraform plan
       shell: bash
       working-directory: terraform
       run: terraform plan -lock=false
+      env:
+        ARM_CLIENT_ID: ${{ inputs.CLIENT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ inputs.SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ inputs.TENANT_ID }}
+        ARM_CLIENT_SECRET: ${{ inputs.CLIENT_SECRET }}
 
     - name: Apply the changes made
       shell: bash
