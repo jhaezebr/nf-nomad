@@ -22,3 +22,11 @@ jobs:
           SUBSCRIPTION_ID: ${{ secrets.TF_VAR_SUBSCRIPTION_ID }}
           TENANT_ID: ${{ secrets.TF_VAR_TENANT_ID }}
           CLIENT_SECRET: ${{ secrets.TF_VAR_CLIENT_SECRET }}
+
+      - name: Destroy nomad
+        uses: ./.github/actions/destroy_nomad_cluster
+        with:
+          CLIENT_ID: ${{ secrets.TF_VAR_CLIENT_ID }}
+          SUBSCRIPTION_ID: ${{ secrets.TF_VAR_SUBSCRIPTION_ID }}
+          TENANT_ID: ${{ secrets.TF_VAR_TENANT_ID }}
+          CLIENT_SECRET: ${{ secrets.TF_VAR_CLIENT_SECRET }}

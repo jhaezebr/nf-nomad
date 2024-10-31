@@ -1,0 +1,50 @@
+name: 'Destroy nomad cluster'
+description: 'Destroy the nomad cluster used to test nf-nomad against'
+inputs:
+  CLIENT_ID:
+    description: 'The Azure Active Directory (AAD) client ID for authentication.'
+    required: true
+  SUBSCRIPTION_ID:
+    description: 'The Azure subscription ID where the resources will be managed.'
+    required: true
+  TENANT_ID:
+    description: 'The Azure Active Directory (AAD) tenant ID for authentication.'
+    required: true
+  CLIENT_SECRET:
+    description: 'The client secret associated with the Azure Active Directory (AAD) client ID.'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - name: Setup terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.1.7
+
+    - name: Initialize terraforms
+      shell: bash
+      working-directory: terraform
+      run: terraform init -reconfigure
+      env:
+        ARM_CLIENT_ID: ${{ inputs.CLIENT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ inputs.SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ inputs.TENANT_ID }}
+        ARM_CLIENT_SECRET: ${{ inputs.CLIENT_SECRET }}
+
+    - name: Destroy resources
+      shell: bash
+      working-directory: terraform
+      env:
+        ARM_CLIENT_ID: ${{ inputs.CLIENT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ inputs.SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ inputs.TENANT_ID }}
+        ARM_CLIENT_SECRET: ${{ inputs.CLIENT_SECRET }}
+        TF_VAR_client_id: ${{ inputs.CLIENT_ID }}
+        TF_VAR_subscription_id: ${{ inputs.SUBSCRIPTION_ID }}
+        TF_VAR_tenant_id: ${{ inputs.TENANT_ID }}
+        TF_VAR_client_secret: ${{ inputs.CLIENT_SECRET }}
+      run: terraform destroy -auto-approve
