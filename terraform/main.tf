@@ -3,7 +3,7 @@ terraform {
   backend "azurerm" {
     resource_group_name  = "nf-nomad-dev-rg"
     storage_account_name = "nfnomad"
-    container_name       = "jhaezebr_test"
+    container_name       = "jhaezebrtest"
     key                  = "terraform.tfstate"
   }
 
