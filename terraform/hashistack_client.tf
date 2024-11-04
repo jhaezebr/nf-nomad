@@ -46,7 +46,7 @@ resource "azurerm_linux_virtual_machine" "client" {
   computer_name  = "hashistack-client-${count.index}"
   admin_username = "ubuntu"
   admin_password = random_string.server_admin_password.result
-  custom_data    = "${base64encode(templatefile("${path.module}/shared/data-scripts/user-data-client.sh", {
+  custom_data    = "${base64encode(templatefile("${path.module}/data-scripts/user-data-client.sh", {
       region                    = var.location
       cloud_env                 = "azure"
       retry_join                = join(" ", [
