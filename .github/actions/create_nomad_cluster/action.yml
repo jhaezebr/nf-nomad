@@ -49,11 +49,6 @@ runs:
         ARM_TENANT_ID: ${{ inputs.TENANT_ID }}
         ARM_CLIENT_SECRET: ${{ inputs.CLIENT_SECRET }}
 
-    - name: Check pwd
-      shell: bash
-      working-directory: ./terraform
-      run: pwd
-
     - name: Terraform plan
       shell: bash
       working-directory: ./terraform
