@@ -22,10 +22,6 @@ resource "azurerm_network_interface" "hashistack-client-ni" {
   tags                            = {"ConsulAutoJoin" = "auto-join"}
 }
 
-resource "random_string" "client_admin_password" {
-  length = 16
-}
-
 resource "azurerm_linux_virtual_machine" "client" {
   name                  = "hashistack-client-${count.index}"
   location              = "${var.location}"
