@@ -24,6 +24,7 @@ jobs:
           CLIENT_SECRET: ${{ secrets.TF_VAR_CLIENT_SECRET }}
           RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
           STORAGE_ACCOUNT_NAME: ${{ secrets.STORAGE_ACCOUNT_NAME }}
+          IMAGE_NAME: "hashistack.20240607112210"
 
       - name: Destroy nomad
         uses: ./.github/actions/destroy_nomad_cluster
@@ -34,3 +35,4 @@ jobs:
           CLIENT_SECRET: ${{ secrets.TF_VAR_CLIENT_SECRET }}
           RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
           STORAGE_ACCOUNT_NAME: ${{ secrets.STORAGE_ACCOUNT_NAME }}
+          IMAGE_NAME: "hashistack.20240607112210"
