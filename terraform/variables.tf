@@ -75,7 +75,12 @@ resource "random_uuid" "nomad_consul_token_id" {}
 # Secret ID for the Consul ACL token used by Nomad servers and clients.
 resource "random_uuid" "nomad_consul_token_secret" {}
 
-#The password for the ubuntu account on the server and client machines.
-resource "random_string" "admin_password" {
+#The password for the ubuntu account on the server machines.
+resource "random_string" "server_admin_password" {
+  length = 16
+}
+
+#The password for the ubuntu account on the client machines.
+resource "random_string" "client_admin_password" {
   length = 16
 }
