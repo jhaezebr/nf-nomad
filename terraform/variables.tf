@@ -76,6 +76,6 @@ resource "random_uuid" "nomad_consul_token_id" {}
 resource "random_uuid" "nomad_consul_token_secret" {}
 
 #The password for the ubuntu account on the server and client machines.
-resource "random_string" "server_admin_password" {
+resource "random_string" "admin_password" {
   length = 16
 }
