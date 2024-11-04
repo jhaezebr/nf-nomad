@@ -36,7 +36,7 @@ runs:
 
     - name: Initialize terraforms
       shell: bash
-      working-directory: terraform
+      working-directory: ./terraform
       run: terraform init -reconfigure
       env:
         ARM_CLIENT_ID: ${{ inputs.CLIENT_ID }}
@@ -46,7 +46,7 @@ runs:
 
     - name: Destroy resources
       shell: bash
-      working-directory: terraform
+      working-directory: ./terraform
       env:
         ARM_CLIENT_ID: ${{ inputs.CLIENT_ID }}
         ARM_SUBSCRIPTION_ID: ${{ inputs.SUBSCRIPTION_ID }}
