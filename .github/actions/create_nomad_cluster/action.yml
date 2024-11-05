@@ -101,7 +101,7 @@ runs:
         TF_VAR_storage_account_name: ${{ inputs.STORAGE_ACCOUNT_NAME }}
         TF_VAR_image_name: ${{ inputs.IMAGE_NAME }}
       run: |
-        echo "nomad_addr=$(terraform output -raw nomad_address)"
+        echo "nomad_addr=$((terraform output -raw nomad_address))"
 
     # echo "nomad_addr=$(terraform output -raw nomad_address)" >> "$GITHUB_OUTPUT"
 
