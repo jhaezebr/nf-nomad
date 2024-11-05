@@ -103,13 +103,12 @@ runs:
         TF_VAR_image_name: ${{ inputs.IMAGE_NAME }}
       run: |
         terraform output -raw nomad_address
+        echo "nomad_addr=$(terraform output -raw nomad_address)" >> "$GITHUB_OUTPUT"
 
-    # echo "nomad_addr=$(terraform output -raw nomad_address)" >> "$GITHUB_OUTPUT"
-
-    # - name: Fetch nomad tokens
-    #   shell: bash
-    #   run: |
-    #     echo ${{ steps.tf-output.outputs.nomad_addr}}
+    - name: Fetch nomad tokens
+      shell: bash
+      run: |
+        echo ${{ steps.tf-output.outputs.nomad_addr}}
 
 
 

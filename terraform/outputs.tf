@@ -1,5 +1,5 @@
 output "nomad_address" {
-  value = "http://${azurerm_linux_virtual_machine.server[0].private_ip_address}:"
+  value = "http://${azurerm_linux_virtual_machine.server[0].private_ip_address}:4646"
 }
 
 output "consul_bootstrap_token_secret" {
