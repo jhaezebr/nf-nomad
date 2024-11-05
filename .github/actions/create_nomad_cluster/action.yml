@@ -102,21 +102,24 @@ runs:
         TF_VAR_storage_account_name: ${{ inputs.STORAGE_ACCOUNT_NAME }}
         TF_VAR_image_name: ${{ inputs.IMAGE_NAME }}
       run: |
-        terraform output -raw nomad_address
-        echo "nomad_addr=$(terraform output -raw nomad_address)" >> "$GITHUB_OUTPUT"
+        echo "nomad_address=$(terraform output -raw nomad_address)" >> "$GITHUB_OUTPUT"
+        echo "consul_bootstrap_token_secret=$(terraform output -raw consul_bootstrap_token_secret)" >> "$GITHUB_OUTPUT"
+        echo "consul_address=$(terraform output -raw consul_address)" >> "$GITHUB_OUTPUT"
+        echo "job_filesystem_name=$(terraform output -raw job_filesystem_name)" >> "$GITHUB_OUTPUT"
 
     - name: Fetch nomad tokens
       shell: bash
       run: |
-        echo ${{ steps.tf-output.outputs.nomad_addr}}
+        wget https://releases.hashicorp.com/consul/1.20.1/consul_1.20.1_linux_amd64.zip
+        unzip consul_1.20.1_linux_amd64.zip
+        consul kv get -token=${{ steps.tf-output.outputs.consul_bootstrap_token_secret }} 'nomad/user_token'
 
 
 
-    # consul kv put -token-file=$CONSUL_BOOTSTRAP_TOKEN 'nomad/user_token' "$(cat $NOMAD_USER_TOKEN)"
     # consul kv put -token-file=$CONSUL_BOOTSTRAP_TOKEN 'nomad/nextflow_token' "$(cat $NOMAD_NEXTFLOW_TOKEN)"
     # consul kv put -token-file=$CONSUL_BOOTSTRAP_TOKEN 'nomad/bootstrap_token' "$(cat $NOMAD_BOOTSTRAP_TOKEN)"
 
-# outputs:
-#   random-number:
-#     description: "Random number"
-#     value: ${{ steps.random-number-generator.outputs.random-number }}
+outputs:
+  nomad_address:
+    description: "Nomad address with port"
+    value: ${{ steps.tf-output.outputs.nomad_address }}
