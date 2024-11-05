@@ -38,6 +38,7 @@ runs:
       uses: hashicorp/setup-terraform@v2
       with:
         terraform_version: 1.9.8
+        terraform_wrapper: false
 
     - name: Initialize terraforms
       shell: bash
