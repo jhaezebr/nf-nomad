@@ -67,6 +67,7 @@ runs:
         TF_VAR_image_name: ${{ inputs.IMAGE_NAME }}
 
     - name: Apply the changes made
+      id: apply
       shell: bash
       working-directory: ./terraform
       env:
@@ -82,3 +83,21 @@ runs:
         TF_VAR_storage_account_name: ${{ inputs.STORAGE_ACCOUNT_NAME }}
         TF_VAR_image_name: ${{ inputs.IMAGE_NAME }}
       run: terraform apply --auto-approve
+
+    - name: Export terraform output
+      id: tf-output
+      shell: bash
+      working-directory: ./terraform
+      run: |
+        echo "nomad_addr=$(terraform output -raw nomad_address) >> "$GITHUB_OUTPUT"
+
+    - name: Fetch nomad tokens
+      shell: bash
+      run: |
+        echo ${{ steps.tf-output.outputs.nomad_addr}}
+
+
+
+    # consul kv put -token-file=$CONSUL_BOOTSTRAP_TOKEN 'nomad/user_token' "$(cat $NOMAD_USER_TOKEN)"
+    # consul kv put -token-file=$CONSUL_BOOTSTRAP_TOKEN 'nomad/nextflow_token' "$(cat $NOMAD_NEXTFLOW_TOKEN)"
+    # consul kv put -token-file=$CONSUL_BOOTSTRAP_TOKEN 'nomad/bootstrap_token' "$(cat $NOMAD_BOOTSTRAP_TOKEN)"
