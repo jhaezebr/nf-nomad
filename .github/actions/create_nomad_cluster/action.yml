@@ -102,15 +102,21 @@ runs:
         TF_VAR_image_name: ${{ inputs.IMAGE_NAME }}
       run: |
         echo "nomad_addr=$(terraform output -raw nomad_address)"
-        echo "nomad_addr=$(terraform output -raw nomad_address)" >> "$GITHUB_OUTPUT"
 
-    - name: Fetch nomad tokens
-      shell: bash
-      run: |
-        echo ${{ steps.tf-output.outputs.nomad_addr}}
+    # echo "nomad_addr=$(terraform output -raw nomad_address)" >> "$GITHUB_OUTPUT"
+
+    # - name: Fetch nomad tokens
+    #   shell: bash
+    #   run: |
+    #     echo ${{ steps.tf-output.outputs.nomad_addr}}
 
 
 
     # consul kv put -token-file=$CONSUL_BOOTSTRAP_TOKEN 'nomad/user_token' "$(cat $NOMAD_USER_TOKEN)"
     # consul kv put -token-file=$CONSUL_BOOTSTRAP_TOKEN 'nomad/nextflow_token' "$(cat $NOMAD_NEXTFLOW_TOKEN)"
     # consul kv put -token-file=$CONSUL_BOOTSTRAP_TOKEN 'nomad/bootstrap_token' "$(cat $NOMAD_BOOTSTRAP_TOKEN)"
+
+# outputs:
+#   random-number:
+#     description: "Random number"
+#     value: ${{ steps.random-number-generator.outputs.random-number }}
