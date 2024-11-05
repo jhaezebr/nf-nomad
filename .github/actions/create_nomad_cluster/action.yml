@@ -89,6 +89,7 @@ runs:
       shell: bash
       working-directory: ./terraform
       run: |
+        echo "nomad_addr=$(terraform output -raw nomad_address)"
         echo "nomad_addr=$(terraform output -raw nomad_address)" >> "$GITHUB_OUTPUT"
 
     - name: Fetch nomad tokens
