@@ -88,6 +88,18 @@ runs:
       id: tf-output
       shell: bash
       working-directory: ./terraform
+      env:
+        ARM_CLIENT_ID: ${{ inputs.CLIENT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ inputs.SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ inputs.TENANT_ID }}
+        ARM_CLIENT_SECRET: ${{ inputs.CLIENT_SECRET }}
+        TF_VAR_client_id: ${{ inputs.CLIENT_ID }}
+        TF_VAR_subscription_id: ${{ inputs.SUBSCRIPTION_ID }}
+        TF_VAR_tenant_id: ${{ inputs.TENANT_ID }}
+        TF_VAR_client_secret: ${{ inputs.CLIENT_SECRET }}
+        TF_VAR_resource_group_name: ${{ inputs.RESOURCE_GROUP_NAME }}
+        TF_VAR_storage_account_name: ${{ inputs.STORAGE_ACCOUNT_NAME }}
+        TF_VAR_image_name: ${{ inputs.IMAGE_NAME }}
       run: |
         echo "nomad_addr=$(terraform output -raw nomad_address)"
         echo "nomad_addr=$(terraform output -raw nomad_address)" >> "$GITHUB_OUTPUT"
