@@ -110,10 +110,7 @@ runs:
     - name: Fetch nomad tokens
       shell: bash
       run: |
-        wget https://releases.hashicorp.com/consul/1.20.1/consul_1.20.1_linux_amd64.zip
-        unzip consul_1.20.1_linux_amd64.zip
-        consul kv get -token=${{ steps.tf-output.outputs.consul_bootstrap_token_secret }} 'nomad/user_token'
-
+        curl --header "X-Consul-Token: ${{ steps.tf-output.outputs.consul_bootstrap_token_secret }}" http://${{ steps.tf-output.outputs.consul_address}}/v1/kv/nomad/user_token
 
 
     # consul kv put -token-file=$CONSUL_BOOTSTRAP_TOKEN 'nomad/nextflow_token' "$(cat $NOMAD_NEXTFLOW_TOKEN)"
