@@ -24,7 +24,7 @@ jobs:
           CLIENT_SECRET: ${{ secrets.TF_VAR_CLIENT_SECRET }}
           RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
           STORAGE_ACCOUNT_NAME: ${{ secrets.STORAGE_ACCOUNT_NAME }}
-          IMAGE_NAME: "hashistack.20241106143509"
+          IMAGE_NAME: "hashistack.20241106160129"
           NOMAD_ACL_ENABLED: "true"
           CONSUL_ACL_ENABLED: "false"
 
@@ -37,6 +37,6 @@ jobs:
       #     CLIENT_SECRET: ${{ secrets.TF_VAR_CLIENT_SECRET }}
       #     RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
       #     STORAGE_ACCOUNT_NAME: ${{ secrets.STORAGE_ACCOUNT_NAME }}
-      #     IMAGE_NAME: "hashistack.20241106143509"
+      #     IMAGE_NAME: "hashistack.20241106160129"
           # NOMAD_ACL_ENABLED: "true"
           # CONSUL_ACL_ENABLED: "false"
