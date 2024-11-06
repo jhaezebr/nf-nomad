@@ -25,6 +25,8 @@ jobs:
           RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
           STORAGE_ACCOUNT_NAME: ${{ secrets.STORAGE_ACCOUNT_NAME }}
           IMAGE_NAME: "hashistack.20241106143509"
+          NOMAD_ACL_ENABLED: "true"
+          CONSUL_ACL_ENABLED: "false"
 
       # - name: Destroy nomad
       #   uses: ./.github/actions/destroy_nomad_cluster
@@ -36,3 +38,5 @@ jobs:
       #     RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
       #     STORAGE_ACCOUNT_NAME: ${{ secrets.STORAGE_ACCOUNT_NAME }}
       #     IMAGE_NAME: "hashistack.20241106143509"
+          # NOMAD_ACL_ENABLED: "true"
+          # CONSUL_ACL_ENABLED: "false"

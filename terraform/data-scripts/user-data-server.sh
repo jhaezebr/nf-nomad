@@ -18,6 +18,10 @@ sudo systemctl restart nomad
 
 echo "Finished server setup"
 
+if [[ '${consul_acl_enabled}' == "true" ]]; then
+  consul_bootstrap
+fi
 
-# consul_bootstrap
-# nomad_bootstrap
+if [[ '${nomad_acl_enabled}' == "true" ]]; then
+  nomad_bootstrap
+fi

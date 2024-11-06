@@ -22,6 +22,12 @@ inputs:
   IMAGE_NAME:
     description: "The Azure image to use for the server and client machines."
     required: true
+  NOMAD_ACL_ENABLED:
+    description: "Enable nomad ACL."
+    required: true
+  CONSUL_ACL_ENABLED:
+    description: "Enable consul ACL."
+    required: true
 
 runs:
   using: "composite"
@@ -59,4 +65,6 @@ runs:
         TF_VAR_resource_group_name: ${{ inputs.RESOURCE_GROUP_NAME }}
         TF_VAR_storage_account_name: ${{ inputs.STORAGE_ACCOUNT_NAME }}
         TF_VAR_image_name: ${{ inputs.IMAGE_NAME }}
+        TF_VAR_nomad_acl_enabled: ${{ inputs.NOMAD_ACL_ENABLED }}
+        TF_VAR_consul_acl_enabled: ${{ inputs.CONSUL_ACL_ENABLED }}
       run: terraform destroy -auto-approve
