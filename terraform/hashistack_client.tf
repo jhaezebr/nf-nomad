@@ -45,23 +45,25 @@ resource "azurerm_linux_virtual_machine" "client" {
 
   computer_name  = "hashistack-client-${count.index}"
   admin_username = "ubuntu"
-  admin_password = random_string.server_admin_password.result
-  custom_data = base64encode(file("${path.module}/data-scripts/test-scripting.sh"))
-  # custom_data    = "${base64encode(templatefile("${path.module}/data-scripts/user-data-client.sh", {
-  #     region                    = var.location
-  #     cloud_env                 = "azure"
-  #     retry_join                = join(" ", [
-  #       "provider=azure",
-  #       "tag_name=ConsulAutoJoin",
-  #       "tag_value=auto-join",
-  #       "subscription_id=${var.subscription_id}",
-  #       "tenant_id=${var.tenant_id}",
-  #       "client_id=${var.client_id}",
-  #       "secret_access_key=${var.client_secret}",
-  #     ])
-  #     nomad_binary              = var.nomad_binary
-  #     nomad_consul_token_secret = random_uuid.nomad_consul_token_secret.id
-  # }))}"
+  admin_password = random_string.client_admin_password.result
+  #custom_data = base64encode(file("${path.module}/data-scripts/test-scripting.sh"))
+  custom_data    = "${base64encode(templatefile("${path.module}/data-scripts/user-data-client.sh", {
+      region                    = var.location
+      cloud_env                 = "azure"
+      retry_join                = join(" ", [
+        "provider=azure",
+        "tag_name=ConsulAutoJoin",
+        "tag_value=auto-join",
+        "subscription_id=${var.subscription_id}",
+        "tenant_id=${var.tenant_id}",
+        "client_id=${var.client_id}",
+        "secret_access_key=${var.client_secret}",
+      ])
+      nomad_binary              = var.nomad_binary
+      nomad_consul_token_secret = random_uuid.nomad_consul_token_secret.id
+      nomad_acl_enabled         = var.nomad_acl_enabled
+      consul_acl_enabled        = var.consul_acl_enabled
+  }))}"
   
   disable_password_authentication = false
 }

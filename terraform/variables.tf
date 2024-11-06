@@ -69,6 +69,18 @@ variable "image_name" {
   description = "The Azure image to use for the server and client machines. Output from the Packer build process. This is the image NAME not the ID."
 }
 
+variable "nomad_acl_enabled" {
+  description = "Enable acl for nomad"
+  default = "false"
+  type = string
+}
+
+variable "consul_acl_enabled" {
+  description = "Enable acl for consul"
+  default = "false"
+  type = string
+}
+
 # Accessor ID for the Consul ACL token used by Nomad servers and clients
 resource "random_uuid" "nomad_consul_token_id" {}
 

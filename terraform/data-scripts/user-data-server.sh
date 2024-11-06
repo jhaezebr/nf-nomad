@@ -9,11 +9,15 @@ sudo bash /ops/shared/scripts/server.sh "${cloud_env}" "${server_count}" '${retr
 
 
 sed -i "s/CONSUL_TOKEN/${nomad_consul_token_secret}/g" /etc/nomad.d/nomad.hcl
+sed -i "s/NOMAD_ACL_ENABLED/${nomad_acl_enabled}/g" /etc/nomad.d/nomad.hcl
 
+sed -i "s/CONSUL_ACL_ENABLED/${consul_acl_enabled}/g" /etc/consul.d/consul.hcl
+
+sudo systemctl restart consul
 sudo systemctl restart nomad
 
 echo "Finished server setup"
 
 
 # consul_bootstrap
-nomad_bootstrap
+# nomad_bootstrap

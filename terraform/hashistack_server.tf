@@ -62,6 +62,8 @@ resource "azurerm_linux_virtual_machine" "server" {
       nomad_binary              = var.nomad_binary
       nomad_consul_token_id     = random_uuid.nomad_consul_token_id.id
       nomad_consul_token_secret = random_uuid.nomad_consul_token_secret.id
+      nomad_acl_enabled         = var.nomad_acl_enabled
+      consul_acl_enabled        = var.consul_acl_enabled
   }))}"
 
   disable_password_authentication = false
