@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -xe
 
 exec > >(sudo tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 sudo bash /ops/shared/scripts/client.sh "${cloud_env}" '${retry_join}' "${nomad_binary}"
