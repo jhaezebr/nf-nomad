@@ -47,8 +47,6 @@ resource "azurerm_linux_virtual_machine" "server" {
   admin_username = "ubuntu"
   admin_password = random_string.server_admin_password.result
   custom_data    = "${base64encode(templatefile("${path.module}/data-scripts/user-data-server.sh", {
-      region                    = var.location
-      cloud_env                 = "azure"
       server_count              = "${var.server_count}"
       retry_join                = join(" ", [
         "provider=azure",
@@ -59,7 +57,6 @@ resource "azurerm_linux_virtual_machine" "server" {
         "client_id=${var.client_id}",
         "secret_access_key=${var.client_secret}",
       ])
-      nomad_binary              = var.nomad_binary
       nomad_consul_token_id     = random_uuid.nomad_consul_token_id.id
       nomad_consul_token_secret = random_uuid.nomad_consul_token_secret.id
       nomad_acl_enabled         = var.nomad_acl_enabled

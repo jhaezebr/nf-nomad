@@ -49,7 +49,6 @@ resource "azurerm_linux_virtual_machine" "client" {
   #custom_data = base64encode(file("${path.module}/data-scripts/test-scripting.sh"))
   custom_data    = "${base64encode(templatefile("${path.module}/data-scripts/user-data-client.sh", {
       region                    = var.location
-      cloud_env                 = "azure"
       retry_join                = join(" ", [
         "provider=azure",
         "tag_name=ConsulAutoJoin",
@@ -59,7 +58,6 @@ resource "azurerm_linux_virtual_machine" "client" {
         "client_id=${var.client_id}",
         "secret_access_key=${var.client_secret}",
       ])
-      nomad_binary              = var.nomad_binary
       nomad_consul_token_secret = random_uuid.nomad_consul_token_secret.id
       nomad_acl_enabled         = var.nomad_acl_enabled
       consul_acl_enabled        = var.consul_acl_enabled
