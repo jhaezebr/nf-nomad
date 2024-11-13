@@ -49,7 +49,7 @@ runs:
     - name: Initialize terraforms
       shell: bash
       working-directory: ./terraform/Infrastructure
-      run: terraform init -reconfigure
+      run: terraform init -reconfigure -lock=false
       env:
         ARM_CLIENT_ID: ${{ inputs.CLIENT_ID }}
         ARM_SUBSCRIPTION_ID: ${{ inputs.SUBSCRIPTION_ID }}
@@ -93,7 +93,7 @@ runs:
         TF_VAR_image_name: ${{ inputs.IMAGE_NAME }}
         TF_VAR_nomad_acl_enabled: ${{ inputs.NOMAD_ACL_ENABLED }}
         TF_VAR_consul_acl_enabled: ${{ inputs.CONSUL_ACL_ENABLED }}
-      run: terraform apply --auto-approve
+      run: terraform apply --auto-approve -lock=false
 
     - name: Export terraform output
       id: tf-output
