@@ -7,7 +7,6 @@ exec > >(sudo tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 
 
 # variables
 RETRY_JOIN=${retry_join}
-NOMAD_BINARY=${nomad_binary}
 CONSUL_ACL_ENABLED=${consul_acl_enabled}
 NOMAD_ACL_ENABLED=${nomad_acl_enabled}
 NOMAD_CONSUL_TOKEN_SECRET=${nomad_consul_token_secret}
