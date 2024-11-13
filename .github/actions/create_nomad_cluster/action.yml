@@ -48,7 +48,7 @@ runs:
 
     - name: Initialize terraforms
       shell: bash
-      working-directory: ./terraform
+      working-directory: ./terraform/Infrastructure
       run: terraform init -reconfigure
       env:
         ARM_CLIENT_ID: ${{ inputs.CLIENT_ID }}
@@ -58,7 +58,7 @@ runs:
 
     - name: Terraform plan
       shell: bash
-      working-directory: ./terraform
+      working-directory: ./terraform/Infrastructure
       run: terraform plan -lock=false
       env:
         ARM_CLIENT_ID: ${{ inputs.CLIENT_ID }}
@@ -78,7 +78,7 @@ runs:
     - name: Apply the changes made
       id: apply
       shell: bash
-      working-directory: ./terraform
+      working-directory: ./terraform/Infrastructure
       env:
         ARM_CLIENT_ID: ${{ inputs.CLIENT_ID }}
         ARM_SUBSCRIPTION_ID: ${{ inputs.SUBSCRIPTION_ID }}
@@ -98,7 +98,7 @@ runs:
     - name: Export terraform output
       id: tf-output
       shell: bash
-      working-directory: ./terraform
+      working-directory: ./terraform/Infrastructure
       env:
         ARM_CLIENT_ID: ${{ inputs.CLIENT_ID }}
         ARM_SUBSCRIPTION_ID: ${{ inputs.SUBSCRIPTION_ID }}
