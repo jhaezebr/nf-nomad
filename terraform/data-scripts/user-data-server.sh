@@ -1,9 +1,7 @@
 #!/bin/bash
-source /ops/shared/data-scripts/subroutines/consul-bootstrap.sh
-source /ops/shared/data-scripts/subroutines/nomad-bootstrap.sh
-
 set -xe
 
+# logging to /var/log/user-data.log on VM
 exec > >(sudo tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
 # variables
@@ -12,6 +10,7 @@ RETRY_JOIN=${retry_join}
 CONSUL_ACL_ENABLED=${consul_acl_enabled}
 NOMAD_ACL_ENABLED=${nomad_acl_enabled}
 NOMAD_CONSUL_TOKEN_SECRET=${nomad_consul_token_secret}
+NOMAD_CONSUL_TOKEN_ID=${nomad_consul_token_id}
 
 # Wait for network
 sleep 15
@@ -245,12 +244,145 @@ echo "export NOMAD_ADDR=http://$IP_ADDRESS:4646" | sudo tee --append /home/$HOME
 echo "export JAVA_HOME=$JAVA_HOME"  | sudo tee --append /home/$HOME_DIR/.bashrc
 
 
-echo "Finished server setup"
+ACL_DIRECTORY="/ops/shared/acl"
+CONSUL_BOOTSTRAP_TOKEN="/tmp/consul_bootstrap"
 
 if [[ "$CONSUL_ACL_ENABLED" == "true" ]]; then
-  consul_bootstrap
+  #consul_bootstrap
+
+  NEEDS_BOOTSTRAPPING="false"
+
+  # Wait until leader has been elected and bootstrap consul ACLs
+  for i in {1..9}; do
+      # capture stdout and stderr
+      set +e
+      sleep 5
+      OUTPUT=$(consul acl bootstrap 2>&1)
+      if [ $? -ne 0 ]; then
+          echo "Consul: acl bootstrap: $OUTPUT"
+          if [[ "$OUTPUT" = *"No cluster leader"* ]]; then
+              echo "Consul: no cluster leader"
+              continue
+          else
+              echo "Consul: already bootstrapped"
+              break
+          fi
+      fi
+      set -e
+
+      echo "Consul: ACL bootstrap begin"
+      echo "$OUTPUT" | grep -i secretid | awk '{print $2}' > $CONSUL_BOOTSTRAP_TOKEN
+      if [ -s $CONSUL_BOOTSTRAP_TOKEN ]; then
+          echo "Consul: bootstrapped"
+          NEEDS_BOOTSTRAPPING="true"
+          break
+      fi
+  done
+
+  if [[ "$NEEDS_BOOTSTRAPPING" == "true" ]]; then
+
+    consul acl policy create \
+        -name 'nomad-auto-join' \
+        -rules="@$ACL_DIRECTORY/consul-acl-nomad-auto-join.hcl" \
+        -token-file=$CONSUL_BOOTSTRAP_TOKEN
+
+    consul acl role create \
+        -name "nomad-auto-join" \
+        -description "Role with policies necessary for nomad servers and clients to auto-join via Consul." \
+        -policy-name "nomad-auto-join" \
+        -token-file=$CONSUL_BOOTSTRAP_TOKEN
+
+    consul acl token create \
+        -accessor=$NOMAD_CONSUL_TOKEN_ID \
+        -secret=$NOMAD_CONSUL_TOKEN_SECRET \
+        -description "Nomad server/client auto-join token" \
+        -role-name nomad-auto-join -token-file=$CONSUL_BOOTSTRAP_TOKEN
+        
+    consul kv put \
+        -token-file=$CONSUL_BOOTSTRAP_TOKEN \
+        'consul/bootstrap_token' "$(cat $CONSUL_BOOTSTRAP_TOKEN)"
+
+  fi
+  echo "Consul: ACL bootstrap end"
 fi
 
+
 if [[ "$NOMAD_ACL_ENABLED" == "true" ]]; then
-  nomad_bootstrap
+  #nomad_bootstrap
+
+  NOMAD_BOOTSTRAP_TOKEN="/tmp/nomad_bootstrap"
+  NOMAD_USER_TOKEN="/tmp/nomad_user_token"
+  NOMAD_NEXTFLOW_TOKEN="/tmp/nomad_nextflow_token"
+  NEEDS_BOOTSTRAPPING="false"
+
+  # Wait for nomad servers to come up and bootstrap nomad ACL
+  for i in {1..12}; do
+      # capture stdout and stderr
+      set +e
+      sleep 5
+      OUTPUT=$(nomad acl bootstrap 2>&1)
+      if [ $? -ne 0 ]; then
+          echo "Nomad: acl bootstrap: $OUTPUT"
+          if [[ "$OUTPUT" = *"No cluster leader"* ]]; then
+              echo "Nomad: no cluster leader"
+              continue
+          else
+              echo "Nomad: already bootstrapped"
+              break
+          fi
+      fi
+      set -e
+
+      echo "Nomad: ACL bootstrap begin"
+      echo "$OUTPUT" | grep -i secret | awk -F '=' '{print $2}' | xargs | awk 'NF' > $NOMAD_BOOTSTRAP_TOKEN
+      if [ -s $NOMAD_BOOTSTRAP_TOKEN ]; then
+          echo "Nomad: bootstrapped"
+          NEEDS_BOOTSTRAPPING="true"
+          break
+      fi
+  done
+
+  if [[ "$NEEDS_BOOTSTRAPPING" == "true" ]]; then
+    # USER TOKEN
+    nomad acl policy apply \
+        -token "$(cat $NOMAD_BOOTSTRAP_TOKEN)" \
+        -description "Policy to allow reading of agents and nodes and listing and submitting jobs in all namespaces." \
+        node-read-job-submit $ACL_DIRECTORY/nomad-acl-user.hcl
+
+    nomad acl token create \
+        -token "$(cat $NOMAD_BOOTSTRAP_TOKEN)" \
+        -name "read-token" \
+        -policy node-read-job-submit \
+        | grep -i secret | awk -F "=" '{print $2}' | xargs > $NOMAD_USER_TOKEN
+
+
+    # NEXTFLOW TOKEN
+    nomad acl policy apply \
+        -token "$(cat $NOMAD_BOOTSTRAP_TOKEN)" \
+        -description "Policy to allow submitting jobs into the nextflow namespace." \
+        nextflow-submit $ACL_DIRECTORY/nomad-acl-nextflow.hcl
+
+    nomad acl token create \
+        -token "$(cat $NOMAD_BOOTSTRAP_TOKEN)" \
+        -name "read-token" \
+        -policy nextflow-submit \
+        | grep -i secret | awk -F "=" '{print $2}' | xargs > $NOMAD_NEXTFLOW_TOKEN
+
+
+    # Write user token to kv
+    if [[ "$CONSUL_ACL_ENABLED" == "true" ]] && [ -f "$CONSUL_BOOTSTRAP_TOKEN" ]; then
+        consul kv put -token-file=$CONSUL_BOOTSTRAP_TOKEN 'nomad/user_token' "$(cat $NOMAD_USER_TOKEN)"
+        consul kv put -token-file=$CONSUL_BOOTSTRAP_TOKEN 'nomad/nextflow_token' "$(cat $NOMAD_NEXTFLOW_TOKEN)"
+        consul kv put -token-file=$CONSUL_BOOTSTRAP_TOKEN 'nomad/bootstrap_token' "$(cat $NOMAD_BOOTSTRAP_TOKEN)"
+    else
+        consul kv put 'nomad/user_token' "$(cat $NOMAD_USER_TOKEN)"
+        consul kv put 'nomad/nextflow_token' "$(cat $NOMAD_NEXTFLOW_TOKEN)"
+        consul kv put 'nomad/bootstrap_token' "$(cat $NOMAD_BOOTSTRAP_TOKEN)"
+    fi
+  fi
+
+  echo "Nomad: ACL bootstrap end"
+
 fi
+
+echo "Finished server setup"
