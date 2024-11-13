@@ -15,18 +15,18 @@ jobs:
         run: echo 'OK'
       - name: Checkout the code
         uses: actions/checkout@v3
-      # - name: Create nomad
-      #   uses: ./.github/actions/create_nomad_cluster
-      #   with:
-      #     CLIENT_ID: ${{ secrets.TF_VAR_CLIENT_ID }}
-      #     SUBSCRIPTION_ID: ${{ secrets.TF_VAR_SUBSCRIPTION_ID }}
-      #     TENANT_ID: ${{ secrets.TF_VAR_TENANT_ID }}
-      #     CLIENT_SECRET: ${{ secrets.TF_VAR_CLIENT_SECRET }}
-      #     RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
-      #     STORAGE_ACCOUNT_NAME: ${{ secrets.STORAGE_ACCOUNT_NAME }}
-      #     IMAGE_NAME: "hashistack.20241106160129"
-      #     NOMAD_ACL_ENABLED: "true"
-      #     CONSUL_ACL_ENABLED: "true"
+      - name: Create nomad
+        uses: ./.github/actions/create_nomad_cluster
+        with:
+          CLIENT_ID: ${{ secrets.TF_VAR_CLIENT_ID }}
+          SUBSCRIPTION_ID: ${{ secrets.TF_VAR_SUBSCRIPTION_ID }}
+          TENANT_ID: ${{ secrets.TF_VAR_TENANT_ID }}
+          CLIENT_SECRET: ${{ secrets.TF_VAR_CLIENT_SECRET }}
+          RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+          STORAGE_ACCOUNT_NAME: ${{ secrets.STORAGE_ACCOUNT_NAME }}
+          IMAGE_NAME: "hashistack.20241106160129"
+          NOMAD_ACL_ENABLED: "true"
+          CONSUL_ACL_ENABLED: "true"
 
       - name: Destroy nomad
         uses: ./.github/actions/destroy_nomad_cluster
